@@ -1,382 +1,157 @@
 <!doctype html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Word Hearing Test (English)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Word Hearing Test — v5-mini</title>
 <style>
-  :root{
-    --bg:#0b1220;--card:#131a2a;--muted:#91a1b3;--text:#e8eef6;--accent:#7bd389;--warn:#f39c12;--error:#ff6b6b;--ok:#2ecc71;--line:#2a3755;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; background:var(--bg); color:var(--text)}
-  .wrap{max-width:1100px;margin:24px auto;padding:20px}
-  header{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-  h1{font-size:clamp(22px,3vw,32px);margin:0}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px; box-shadow:0 6px 20px rgba(0,0,0,.25)}
-  .grid{display:grid;gap:16px}
-  @media(min-width:900px){.grid{grid-template-columns:1.2fr .8fr}}
-  .controls{display:grid;gap:12px}
-  label{display:grid;gap:6px;font-size:14px;color:var(--muted)}
-  input[type=range]{width:100%}
-  .btns{display:flex;gap:10px;flex-wrap:wrap}
+  :root{--bg:#0b1220;--card:#131a2a;--muted:#91a1b3;--text:#e8eef6;--ok:#2ecc71;--bad:#ff6b6b;--line:#2a3755}
+  *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+  .wrap{max-width:820px;margin:24px auto;padding:20px}
+  .pill{position:fixed;top:10px;right:10px;background:#1c2741;border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px}
+  .card{background:#131a2a;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  h1{margin:.2rem 0 1rem 0;font-size:clamp(22px,3.2vw,30px)}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
   button{background:#1f2a44;color:var(--text);border:1px solid #2d3a57;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
   button.primary{background:linear-gradient(135deg,#19b37b,#11a1ec);border:none}
-  button:disabled{opacity:.5;cursor:not-allowed}
+  button:disabled{opacity:.55;cursor:not-allowed}
   .options{display:grid;gap:10px;margin-top:8px}
-  .option{background:#19233a;border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer}
-  .option.correct{outline:2px solid var(--ok)}
-  .option.incorrect{outline:2px solid var(--error)}
-  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  .pill{padding:6px 10px;border-radius:999px;background:#1c2741;border:1px solid var(--line);color:var(--muted);font-size:13px}
-  .score{font-weight:800}
-  .small{font-size:12px;color:var(--muted)}
-  .notice{background:#152038;border-left:4px solid var(--warn);padding:10px;border-radius:10px;color:#e9e2d0}
-  .audiogram{height:260px;background:#0e172b;border:1px solid var(--line);border-radius:12px;position:relative}
-  .audiogram .xlabel,.audiogram .ylabel{position:absolute;color:var(--muted);font-size:12px}
-  .audiogram .xlabel{bottom:8px;left:50%;transform:translateX(-50%)}
-  .audiogram .ylabel{top:50%;left:6px;transform:translateY(-50%) rotate(-90deg)}
-  .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
-  .legend span{display:inline-flex;align-items:center;gap:6px}
-  .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
-  .sw.vowels{background:#3959b8}
-  .sw.consonants{background:#1a9aa6}
-  .sw.loss{background:#8b2d2d}
-  .panel{display:grid;gap:10px}
-  .muted{color:var(--muted)}
-  .right-top{display:flex; gap:10px; align-items:center; justify-content:space-between}
+  .option{background:#19233a;border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;text-align:left}
+  .small{font-size:13px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  td,th{border-bottom:1px solid #22304b;padding:8px;text-align:left}
+  tr.ok td{background:rgba(46,204,113,.08)} tr.bad td{background:rgba(255,107,107,.08)} tr.skip td{background:rgba(200,200,200,.06)}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Word Hearing Test (English)</h1>
-      <div class="pill">Beta • Not a medical diagnosis</div>
-    </header><div class="notice small" role="note">
-  You will hear a common English word. Pick the word you think you heard. Optional: adjust noise and frequency band to explore which parts of speech (in kHz / MHz) are harder to hear. Results are for self‑screening only and don’t replace an audiologist’s test.
-</div>
+<div class="pill">Hearing Lab v5-mini • cache-buster v5</div>
+<div class="wrap">
+  <h1>Word Hearing Test (mini)</h1>
+  <p class="small">Hear one English word, pick what you heard, or press <b>I can’t tell</b>. No immediate feedback – summary after 20 words.</p>
 
-<div class="grid" id="app">
-  <!-- Left: Test -->
   <section class="card">
-    <div class="row" style="justify-content:space-between">
-      <div>
-        <div class="muted small">Progress</div>
-        <div><span id="progressCount">0</span>/<span id="totalCount">20</span> • Score <span class="score" id="score">0</span></div>
-      </div>
-      <div class="row">
-        <label class="pill">Voice
-          <select id="voiceSelect" style="background:transparent;color:var(--text);border:none">
-            <option value="">Auto</option>
-          </select>
-        </label>
-        <div class="pill" id="freqReadout">Center: 2.00 kHz • 0.0020 MHz</div>
-      </div>
-    </div>
+    <div class="small" id="status">Word 0/20 • Score 0</div>
 
-    <div class="btns" style="margin-top:10px">
+    <div class="btns">
       <button id="playBtn" class="primary">▶ Play word</button>
       <button id="repeatBtn" disabled>⟳ Repeat</button>
+      <button id="skipBtn">I can’t tell</button>
       <button id="nextBtn" disabled>Next</button>
-      <button id="restartBtn" style="display:none">Restart</button>
     </div>
 
     <div class="options" id="options"></div>
-
-    <div class="controls" style="margin-top:14px">
-      <label>Noise level (approx. SNR in dB)
-        <input type="range" id="noise" min="-20" max="30" value="20" step="1" />
-        <span class="small">Higher is quieter background (easier). Lower/negative adds more noise (harder).</span>
-      </label>
-      <label>Band‑pass center frequency (kHz)
-        <input type="range" id="freq" min="0.25" max="8" value="2" step="0.05" />
-        <div class="small">This shapes the <b>noise</b> around the chosen frequency to probe sensitivity. Human speech mostly spans <b>0.25–8 kHz</b> (0.00025–0.008 MHz).</div>
-      </label>
-      <label>Band width (Q)
-        <input type="range" id="q" min="0.3" max="10" value="1.2" step="0.1" />
-      </label>
-    </div>
   </section>
 
-  <!-- Right: Frequency panel -->
-  <aside class="card panel">
-    <div class="right-top">
-      <h3 style="margin:0">Speech & Hearing Ranges</h3>
-      <div class="pill" id="hzNow">—</div>
-    </div>
-    <div class="audiogram" id="audiogram">
-      <canvas id="ag" width="700" height="260" style="width:100%;height:100%"></canvas>
-      <div class="xlabel">Frequency (kHz / MHz)</div>
-      <div class="ylabel">Relative audibility / examples</div>
-    </div>
-    <div class="legend">
-      <span><i class="sw vowels"></i> vowels (~0.25–1 kHz)</span>
-      <span><i class="sw consonants"></i> consonants (~1–6 kHz)</span>
-      <span><i class="sw loss"></i> typical hearing‑loss impact areas</span>
-    </div>
-    <div class="small muted">
-      Typical degrees of hearing loss (pure‑tone, dB HL):
-      <ul>
-        <li>Mild 26–40 dB</li>
-        <li>Moderate 41–55 dB</li>
-        <li>Moderately severe 56–70 dB</li>
-        <li>Severe 71–90 dB</li>
-        <li>Profound ≥91 dB</li>
-      </ul>
-      This tool estimates recognition in noise by frequency band. It does <i>not</i> measure pure‑tone thresholds.
-    </div>
-  </aside>
+  <section id="results" class="card" style="margin-top:14px; display:none">
+    <h3>Results</h3>
+    <div id="summary"></div>
+    <table><thead><tr><th>#</th><th>Target</th><th>Your answer</th><th>Outcome</th></tr></thead><tbody id="rows"></tbody></table>
+    <div class="btns"><button id="restartBtn">Restart</button></div>
+  </section>
 </div>
 
-<section class="card" style="margin-top:16px">
-  <h3 style="margin-top:0">How this works</h3>
-  <ol class="small">
-    <li>Press <b>Play word</b>. The browser reads a random word using Text‑to‑Speech (English).</li>
-    <li>Adjust <b>Noise level</b>. Lower values add louder noise; higher values are easier.</li>
-    <li>Pick what you heard. You get instant feedback and a running score.</li>
-    <li>Optionally sweep the frequency (in kHz / MHz) to explore where recognition drops.</li>
-  </ol>
-  <p class="small">Tip: Use good over‑ear headphones in a quiet room. Repeat the test at several volumes. This page does not collect or send data anywhere.</p>
-</section>
-
-  </div><script>
-// ---------------- Word list (common & confusable) ----------------
-const WORDS = [
-  "cat","cap","cup","cop","cut","cot","caught","coat","boat","goat","note","nose","close","clothes",
-  "bed","bad","bet","bat","bit","beat","bead","bid","ship","sheep","chip","cheap","sheet","seat",
-  "tree","three","free","green","queen","clean","screen","street","chair","share","pair","bear","pear",
-  "phone","tone","stone","alone","shown","known","home","foam","park","bark","dark","mark","card","guard",
-  "light","night","right","write","ride","wide","file","mile","smile","plane","plain","plan","plant",
-  "cold","gold","told","sold","bold","old","tall","call","fall","ball"
-];
-
-function pick(n, arr){
-  const a=[...arr];
-  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
-  return a.slice(0,n);
-}
-
-// ---------------- Test state ----------------
+<script>
+/* ============ Words & state ============ */
+const WORDS = ["cat","cap","cup","cop","cut","cot","boat","goat","note","nose",
+  "close","bed","bad","bet","bat","bit","beat","bead","bid","ship","sheep","chip",
+  "cheap","sheet","seat","tree","three","free","green","queen","chair","share",
+  "pair","bear","pear","coat","coat","phone","tone","stone","home","foam"];
 const TOTAL = 20;
-let score = 0, progress = 0, currentWord = null, locked = false;
-let lastUtterance = null;
+let progress = 0, score = 0, currentWord = "", locked = false;
+const results = []; // {n,target,answer,outcome}
 
-// ---------------- Web Audio for band‑limited noise ----------------
-let actx = null, noiseNode = null, noiseGain = null, filter = null;
-function ensureAudio(){
-  if(actx) return;
-  actx = new (window.AudioContext||window.webkitAudioContext)();
-  // White noise buffer
-  const buffer = actx.createBuffer(1, actx.sampleRate*2, actx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for(let i=0;i<data.length;i++){ data[i] = Math.random()*2-1; }
-  const src = actx.createBufferSource();
-  src.buffer = buffer; src.loop = true;
-  filter = actx.createBiquadFilter();
-  filter.type = "bandpass"; filter.frequency.value = 2000; filter.Q.value = 1.2;
-  noiseGain = actx.createGain(); noiseGain.gain.value = dbToGain(-60); // start very quiet
-  src.connect(filter).connect(noiseGain).connect(actx.destination);
-  src.start();
-  noiseNode = src;
-}
+/* ============ Elements ============ */
+const statusEl = document.getElementById('status');
+const optionsEl = document.getElementById('options');
+const playBtn = document.getElementById('playBtn');
+const repeatBtn = document.getElementById('repeatBtn');
+const skipBtn = document.getElementById('skipBtn');
+const nextBtn = document.getElementById('nextBtn');
+const resSec = document.getElementById('results');
+const summary = document.getElementById('summary');
+const rows = document.getElementById('rows');
+const restartBtn = document.getElementById('restartBtn');
 
-function dbToGain(db){ return Math.pow(10, db/20); }
-
-function setNoiseFromSNR(snrDb){
-  // Approximation: 0 dB ~ moderate noise, +30 = much quieter, -20 = very loud noise
-  // Map slider to noise gain between about -50 dB and -5 dB
-  const clamped = Math.max(-20, Math.min(30, snrDb));
-  const noiseDb =  -5 - (clamped); // higher SNR -> quieter noise
-  if(noiseGain) noiseGain.gain.value = dbToGain(noiseDb);
-}
-
-function setFilter(freqKhz, Q){
-  if(!filter) return;
-  filter.frequency.value = freqKhz*1000; // kHz -> Hz
-  filter.Q.value = Q;
-}
-
-// ---------------- Speech Synthesis ----------------
-const voiceSelect = document.getElementById('voiceSelect');
-function populateVoices(){
-  const list = window.speechSynthesis.getVoices();
-  voiceSelect.innerHTML = '<option value="">Auto</option>' +
-    list.filter(v=>/en|US|GB|AU|CA/i.test(v.lang)).map(v=>`<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
-}
-if ('speechSynthesis' in window) {
-  populateVoices();
-  window.speechSynthesis.onvoiceschanged = populateVoices;
-}
-
+/* ============ Speech ============ */
 function speak(text){
-  if(!('speechSynthesis' in window)){
-    alert('This browser does not support speech synthesis.');
-    return;
-  }
+  if(!('speechSynthesis' in window)){ alert('Speech synthesis not supported in this browser.'); return; }
   const u = new SpeechSynthesisUtterance(text);
-  const chosen = [...window.speechSynthesis.getVoices()].find(v=>v.name===voiceSelect.value);
-  if(chosen) u.voice = chosen;
-  u.rate = 0.95; // a tad slower for clarity
-  u.pitch = 1.0;
-  lastUtterance = u;
+  const vs = window.speechSynthesis.getVoices();
+  if(vs && vs.length){ u.voice = vs.find(v=>/en/i.test(v.lang)) || vs[0]; }
+  u.rate = 0.95; u.pitch = 1.0;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
 }
+window.speechSynthesis && (window.speechSynthesis.onvoiceschanged = ()=>{});
 
-// ---------------- UI elements ----------------
-const optionsEl = document.getElementById('options');
-const scoreEl = document.getElementById('score');
-const progressEl = document.getElementById('progressCount');
-const totalCountEl = document.getElementById('totalCount');
-const playBtn = document.getElementById('playBtn');
-const repeatBtn = document.getElementById('repeatBtn');
-const nextBtn = document.getElementById('nextBtn');
-const restartBtn = document.getElementById('restartBtn');
-const noiseSlider = document.getElementById('noise');
-const freqSlider = document.getElementById('freq');
-const qSlider = document.getElementById('q');
-const freqReadout = document.getElementById('freqReadout');
-const hzNow = document.getElementById('hzNow');
+/* ============ Helpers ============ */
+function randChoice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
 
-function updateFreqReadout(){
-  const khz = Number(freqSlider.value);
-  const mhz = khz / 1000;
-  freqReadout.textContent = `Center: ${khz.toFixed(2)} kHz • ${mhz.toFixed(4)} MHz`;
-  hzNow.textContent = `${khz.toFixed(2)} kHz / ${mhz.toFixed(4)} MHz • Q ${Number(qSlider.value).toFixed(1)}`;
-}
-
-noiseSlider.addEventListener('input', ()=> setNoiseFromSNR(Number(noiseSlider.value)) );
-
-freqSlider.addEventListener('input', ()=>{ setFilter(Number(freqSlider.value), Number(qSlider.value)); updateFreqReadout(); drawAudiogram(); });
-qSlider.addEventListener('input', ()=>{ setFilter(Number(freqSlider.value), Number(qSlider.value)); updateFreqReadout(); drawAudiogram(); });
-
-// ---------------- Test flow ----------------
-function newRound(){
+/* ============ Flow ============ */
+function startRound(){
   locked = false;
-  currentWord = pick(1, WORDS)[0];
-  // pick 3 distractors
-  let distractors = [];
-  const pool = WORDS.filter(w=>w!==currentWord);
-  // try to pick similar endings/vowels
-  const endings = currentWord.slice(-2);
-  const vowel = currentWord.replace(/[^aeiou]/g,'')[0]||'a';
-  distractors = pool.filter(w=> w.endsWith(endings) || w.includes(vowel)).slice(0,8);
-  if(distractors.length<3){ distractors = pool; }
-  const choices = pick(3, distractors).concat([currentWord]);
-  const shuffled = pick(choices.length, choices);
-
-  optionsEl.innerHTML = '';
-  shuffled.forEach(word=>{
-    const btn = document.createElement('button');
-    btn.className = 'option';
-    btn.textContent = word;
-    btn.addEventListener('click', ()=> selectOption(btn, word===currentWord));
-    optionsEl.appendChild(btn);
+  progress++;
+  if(progress > TOTAL){ finish(); return; }
+  statusEl.textContent = `Word ${progress}/${TOTAL} • Score ${score}`;
+  currentWord = randChoice(WORDS);
+  // options
+  const opts = new Set([currentWord]);
+  while(opts.size < 4){ opts.add(randChoice(WORDS)); }
+  const choices = shuffle([...opts]);
+  // render
+  optionsEl.innerHTML = "";
+  choices.forEach(w=>{
+    const b=document.createElement('button');
+    b.className='option';
+    b.textContent=w;
+    b.onclick=()=> choose(w);
+    optionsEl.appendChild(b);
   });
-
   repeatBtn.disabled = false;
   nextBtn.disabled = true;
   speak(currentWord);
 }
-
-function selectOption(el, isCorrect){
+function choose(answer){
   if(locked) return;
   locked = true;
-  if(isCorrect){
-    el.classList.add('correct');
-    score++;
-  } else {
-    el.classList.add('incorrect');
-    // also show which one was correct
-    [...document.querySelectorAll('.option')].forEach(o=>{ if(o.textContent===currentWord) o.classList.add('correct'); });
-  }
-  scoreEl.textContent = String(score);
+  const ok = (answer === currentWord);
+  if(ok) score++;
+  results.push({ n: progress, target: currentWord, answer, outcome: ok?'ok':'bad' });
   nextBtn.disabled = false;
 }
-
-function nextRound(){
-  progress++;
-  progressEl.textContent = String(progress);
-  if(progress>=TOTAL){
-    finishTest();
-    return;
-  }
-  newRound();
+function skip(){
+  if(locked) return;
+  locked = true;
+  results.push({ n: progress, target: currentWord, answer:'skip', outcome:'skip' });
+  nextBtn.disabled = false;
+}
+function finish(){
+  // hide test UI
+  document.querySelector('section.card').style.display='none';
+  // summary
+  const ok = results.filter(r=>r.outcome==='ok').length;
+  const bad = results.filter(r=>r.outcome==='bad').length;
+  const skipN = results.filter(r=>r.outcome==='skip').length;
+  const pct = Math.round(100*ok/Math.max(1,results.length));
+  summary.innerHTML = `<div class="pill" style="position:static">OK ${ok} • Wrong ${bad} • I can’t tell ${skipN} → <b>${pct}%</b></div>`;
+  rows.innerHTML = results.map(r=>{
+    const cls = r.outcome==='ok'?'ok': r.outcome==='bad'?'bad':'skip';
+    return `<tr class="${cls}"><td>${r.n}</td><td>${r.target}</td><td>${r.answer}</td><td>${r.outcome}</td></tr>`;
+  }).join('');
+  resSec.style.display='block';
+  // store history (local)
+  const runs = JSON.parse(localStorage.getItem('hearingMiniRuns')||'[]');
+  runs.unshift({date:new Date().toISOString().slice(0,10), pct});
+  localStorage.setItem('hearingMiniRuns', JSON.stringify(runs.slice(0,25)));
 }
 
-function finishTest(){
-  optionsEl.innerHTML = '';
-  nextBtn.disabled = true; repeatBtn.disabled = true; playBtn.disabled = true;
-  const pct = Math.round((score/TOTAL)*100);
-  const div = document.createElement('div');
-  div.innerHTML = `<h3>Result</h3><p>You scored <b>${score}/${TOTAL}</b> (${pct}%).</p><p class="small">Try changing center frequency or Q and run again to see how recognition changes across bands.</p>`;
-  optionsEl.appendChild(div);
-  restartBtn.style.display='inline-block';
-}
-
-function restart(){ score=0; progress=0; progressEl.textContent='0'; scoreEl.textContent='0'; playBtn.disabled=false; repeatBtn.disabled=true; nextBtn.disabled=true; restartBtn.style.display='none'; newRound(); }
-
-playBtn.addEventListener('click', ()=>{ ensureAudio(); setNoiseFromSNR(Number(noiseSlider.value)); setFilter(Number(freqSlider.value), Number(qSlider.value)); updateFreqReadout(); if(actx && actx.state==='suspended') actx.resume(); newRound(); });
-repeatBtn.addEventListener('click', ()=>{ if(currentWord) speak(currentWord); });
-nextBtn.addEventListener('click', nextRound);
-restartBtn.addEventListener('click', restart);
-
-totalCountEl.textContent = String(TOTAL);
-updateFreqReadout();
-
-// ---------------- Audiogram‑style panel ----------------
-const canvas = document.getElementById('ag');
-const ctx = canvas.getContext('2d');
-function drawAudiogram(){
-  const w = canvas.width, h = canvas.height;
-  ctx.clearRect(0,0,w,h);
-  // background grid (log-ish ticks at 0.25,0.5,1,2,4,6,8 kHz)
-  const ticks = [0.25,0.5,1,2,4,6,8];
-  function xFor(khz){
-    // map 0.25–8 kHz to padding..w-10 on log scale
-    const min=0.25, max=8;
-    const log = (v)=>Math.log10(v);
-    const pad=40, padR=10;
-    const t=(log(khz)-log(min))/(log(max)-log(min));
-    return pad + t*(w-pad-padR);
-  }
-  ctx.strokeStyle = '#23304d';
-  ctx.lineWidth = 1;
-  ticks.forEach(v=>{
-    const x = xFor(v); ctx.beginPath(); ctx.moveTo(x,10); ctx.lineTo(x,h-25); ctx.stroke();
-    ctx.fillStyle = '#91a1b3'; ctx.font = '12px system-ui';
-    ctx.fillText(`${v} kHz`, x-14, h-8);
-    const mhz = (v/1000).toFixed(4);
-    ctx.fillText(`${mhz} MHz`, x-18, h-22);
-  });
-  // Regions: vowels (0.25–1 kHz)
-  function rect(x1,x2,y1,y2,fill){ ctx.fillStyle=fill; ctx.fillRect(x1,y1,x2-x1,y2-y1); }
-  const yTop=20, yBot=h-30;
-  rect(xFor(0.25), xFor(1), yTop, yBot, 'rgba(57,89,184,0.20)');
-  // consonants (1–6 kHz)
-  rect(xFor(1), xFor(6), yTop, yBot, 'rgba(26,154,166,0.18)');
-  // typical high‑freq loss impact (3–8 kHz)
-  rect(xFor(3), xFor(8), yTop, yBot, 'rgba(139,45,45,0.14)');
-
-  // Current band marker from sliders
-  const khz = Number(freqSlider.value); const Q = Number(qSlider.value);
-  const center = xFor(khz);
-  // show ~band edges as 1/Q bandwidth (rough visual)
-  const bw = khz/Q; // kHz
-  const left = xFor(Math.max(0.25, khz - bw/2));
-  const right = xFor(Math.min(8, khz + bw/2));
-  ctx.fillStyle = 'rgba(255,255,255,0.08)';
-  ctx.fillRect(left, yTop, right-left, yBot-yTop);
-  ctx.strokeStyle = '#e8eef6'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(center, yTop); ctx.lineTo(center, yBot); ctx.stroke();
-
-  // labels
-  ctx.fillStyle='#e8eef6'; ctx.font='12px system-ui';
-  ctx.fillText('Vowels energy', xFor(0.45)-30, yTop+18);
-  ctx.fillText('Consonants (clarity)', xFor(2.2)-40, yTop+18);
-  ctx.fillText('High‑freq loss impact', xFor(5.0)-45, yTop+18);
-}
-
-drawAudiogram();
-</script></body>
+/* ============ Wiring ============ */
+playBtn.onclick = startRound;
+repeatBtn.onclick = ()=> currentWord && speak(currentWord);
+skipBtn.onclick = skip;
+nextBtn.onclick = startRound;
+restartBtn.onclick = ()=> location.reload();
+</script>
+</body>
 </html>
