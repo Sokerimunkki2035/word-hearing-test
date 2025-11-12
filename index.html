@@ -1,140 +1,112 @@
-<!-- Hearing Lab v6.3 – November 2025 – Build #2300 -->
+<!-- Hearing Lab v8.1 – Suomi – Build #2311 – November 2025 -->
 <!doctype html>
-<html lang="en">
+<html lang="fi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hearing Lab v6.3 • Light Bilingual • Build #2300</title>
+<title>Hearing Lab v8.1 – Kuulotesti (Suomi)</title>
 <style>
-:root{
-  --bg:#fafbfe;--card:#fff;--line:#e5e7eb;--muted:#5b6573;--text:#111827;
-  --accent:#2563eb;--ok:#16a34a;--bad:#ef4444;
-}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;background:var(--bg);color:var(--text)}
-.wrap{max-width:1000px;margin:0 auto;padding:20px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
-button{background:#f3f4f6;border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:4px;cursor:pointer;font-weight:600}
-button.primary{background:linear-gradient(135deg,#60a5fa,#22c55e);color:#fff;border:none}
-.small{font-size:13px;color:var(--muted)}
+body{font-family:sans-serif;background:#f8fafc;color:#111;margin:0;padding:20px;text-align:center}
+button{background:#2563eb;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:16px;margin:6px;cursor:pointer}
+input{padding:8px;border:1px solid #ccc;border-radius:6px}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);margin:20px auto;padding:20px;max-width:420px}
 .hidden{display:none}
-input[type=text]{padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:15px}
-.langbtn{border:none;background:#e0e7ff;color:#1e3a8a;border-radius:8px;padding:4px 10px;font-weight:600;margin-left:4px}
-footer{margin-top:20px;font-size:12px;color:var(--muted);text-align:center}
+.version{color:#555;font-size:14px;margin-bottom:8px}
+footer{margin-top:30px;font-size:12px;color:#555}
 </style>
 </head>
 <body>
-<div class="wrap">
-<h1>Hearing Lab v6.3 • Light Bilingual • Build #2300</h1>
-<div>🌐 Language:
- <button id="setEN" class="langbtn">English</button>
- <button id="setFI" class="langbtn">Suomi</button>
+<h1>Hearing Lab – Kuulotesti</h1>
+<div class="version">Versio 8.1 (Suomi Build #2311)</div>
+
+<div class="card" id="kalib">
+ <h2>Kalibrointi</h2>
+ <p>Soita 1 kHz ääni ja säädä äänenvoimakkuus mukavaksi.</p>
+ <button onclick="playTone(1000)">▶ Soita 1 kHz</button>
+ <button onclick="stopTone()">⏹ Pysäytä</button><br><br>
+ <button onclick="next('hyper')">Seuraava → Ääniherkkyystesti</button>
 </div>
 
-<section id="instructions" class="card">
- <h2 id="t_intro"></h2>
- <ol id="t_steps" class="small"></ol>
- <div><button id="startBtn" class="primary"></button></div>
-</section>
-
-<section id="calibration" class="card hidden">
- <h3 id="t_calib"></h3>
- <p id="t_calibInfo" class="small"></p>
- <button id="toneBtn" class="primary">▶ Play / Stop 1 kHz</button>
- <button id="toHyper">Next → Hyperacusis</button>
-</section>
-
-<section id="hyper" class="card hidden">
- <h3 id="t_hyper"></h3>
- <p id="t_hyperInfo" class="small"></p>
- <button id="hyperPlay" class="primary">▶ Play next tone</button>
- <button id="hyperReplay">⟳ Replay</button>
- <button id="toWords" class="primary">Next → Word test</button>
- <div class="small">Progress: <span id="hyperProg">0</span>/5 freq <span id="hyperHz">–</span> kHz</div>
- <canvas id="hyperChart" width="700" height="200"></canvas>
-</section>
-
-<section id="words" class="card hidden">
- <h3 id="t_wordtest"></h3>
- <div class="small"><span id="t_word"></span> <span id="wIdx">0</span>/10</div>
- <div>
-  <button id="playWord" class="primary">▶ Play</button>
-  <button id="repeatWord">⟳ Repeat</button>
- </div>
- <div>
-  <input id="answer" type="text" placeholder="Type / Kirjoita" autocomplete="off">
-  <button id="submitAns">Submit</button>
-  <button id="skipAns">Ohi / I can’t tell</button>
- </div>
-</section>
-
-<section id="results" class="card hidden">
- <h3 id="t_results"></h3>
- <div id="summary"></div>
- <canvas id="earChart" width="700" height="220"></canvas>
- <button id="restart" class="primary"></button>
-</section>
-
-<footer>Hearing Lab v6.3 • Build #2300 • November 2025</footer>
+<div class="card hidden" id="hyper">
+ <h2>Ääniherkkyystesti</h2>
+ <p>Kuuntele viisi ääntä eri taajuuksilla (0.5–8 kHz) ja arvioi miltä ne tuntuvat.</p>
+ <p id="freqLabel"></p>
+ <button onclick="playNextFreq()">▶ Soita seuraava</button><br>
+ <button onclick="rate('miellyttävä')">Miellyttävä</button>
+ <button onclick="rate('kuuluu')">Kuuluu</button>
+ <button onclick="rate('kovahko')">Kovahko</button>
+ <button onclick="rate('epämiellyttävä')">Epämiellyttävä</button><br><br>
+ <button onclick="next('words')">Seuraava → Sanatesti</button>
 </div>
+
+<div class="card hidden" id="words">
+ <h2>Sanatesti</h2>
+ <p id="wordNum"></p>
+ <button onclick="playWord()">▶ Soita sana</button><br><br>
+ <input id="ans" placeholder="Kirjoita sana"><br><br>
+ <button onclick="submitAns()">Lähetä</button>
+ <button onclick="skip()">Ohi</button>
+</div>
+
+<div class="card hidden" id="result">
+ <h2>Tulokset</h2>
+ <p id="hyperRes"></p>
+ <p id="score"></p>
+ <button onclick="location.reload()">Aloita alusta</button>
+</div>
+
+<footer>Hearing Lab v8.1 • Suomi • Build #2311 • November 2025</footer>
 
 <script>
-// ---------- text dictionary ----------
-const T={EN:{intro:"Test Instructions",steps:["Use good headphones.","Set volume ≈ 50 %.","During calibration choose a comfortable level.","You can always choose 'I can’t tell'.","Steps: Calibration → Sensitivity → Word test → Results."],
- start:"▶ Start test",calib:"Calibration",calibInfo:"Play 1 kHz tone and choose how it feels.",hyper:"Hyperacusis / Loudness sensitivity",
- hyperInfo:"Play five tones (0.5 – 8 kHz) and rate each.",wordtest:"Word test",word:"Word:",results:"Results",restart:"Restart"},
- FI:{intro:"Kuulotestin ohjeet",steps:["Käytä hyviä kuulokkeita hiljaisessa tilassa.","Säädä ääni noin puoleenväliin.","Kalibroinnissa valitse miellyttävä taso.","Voit aina valita 'Ohi / En erota'.","Vaiheet: Kalibrointi → Ääniherkkyys → Sanatesti → Tulokset."],
- start:"▶ Aloita testi",calib:"Kalibrointi",calibInfo:"Soita 1 kHz ääni ja valitse miltä tuntuu.",hyper:"Ääniherkkyystesti",
- hyperInfo:"Soitetaan viisi ääntä (0.5–8 kHz).",wordtest:"Sanatesti",word:"Sana:",results:"Tulokset",restart:"Aloita alusta"}};
-let LANG=localStorage.getItem('hl_lang')||'FI';
-function setLang(l){LANG=l;localStorage.setItem('hl_lang',l);
- const t=T[LANG];
- document.getElementById('t_intro').textContent=t.intro;
- document.getElementById('t_steps').innerHTML=t.steps.map(s=>`<li>${s}</li>`).join('');
- document.getElementById('startBtn').textContent=t.start;
- document.getElementById('t_calib').textContent=t.calib;
- document.getElementById('t_calibInfo').textContent=t.calibInfo;
- document.getElementById('t_hyper').textContent=t.hyper;
- document.getElementById('t_hyperInfo').textContent=t.hyperInfo;
- document.getElementById('t_wordtest').textContent=t.wordtest;
- document.getElementById('t_word').textContent=t.word;
- document.getElementById('t_results').textContent=t.results;
- document.getElementById('restart').textContent=t.restart;
+// --- Äänen toisto ---
+let ctx,osc,gain;
+function playTone(f){
+ if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();
+  osc=ctx.createOscillator();gain=ctx.createGain();
+  osc.connect(gain).connect(ctx.destination);osc.start();}
+ osc.frequency.value=f;gain.gain.value=0.1;
 }
-document.getElementById('setEN').onclick=()=>setLang('EN');
-document.getElementById('setFI').onclick=()=>setLang('FI');
-setLang(LANG);
+function stopTone(){if(gain)gain.gain.value=0;}
 
-// ---------- calibration ----------
-let actx,osc,gain;
-function ensureAudio(){if(actx)return;actx=new (window.AudioContext||window.webkitAudioContext)();osc=actx.createOscillator();gain=actx.createGain();osc.connect(gain).connect(actx.destination);osc.start();gain.gain.value=0;}
-function playTone(f){ensureAudio();osc.frequency.value=f;gain.gain.setValueAtTime(0.1,actx.currentTime);}
-function stopTone(){if(!gain)return;gain.gain.setValueAtTime(0,actx.currentTime);}
-document.getElementById('startBtn').onclick=()=>{document.getElementById('instructions').classList.add('hidden');document.getElementById('calibration').classList.remove('hidden');};
-document.getElementById('toneBtn').onclick=()=>{ensureAudio();if(gain.gain.value>0)stopTone();else playTone(1000);};
-document.getElementById('toHyper').onclick=()=>{stopTone();document.getElementById('calibration').classList.add('hidden');document.getElementById('hyper').classList.remove('hidden');};
+// --- Vaiheet ---
+function next(id){document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+ document.getElementById(id).classList.remove('hidden');}
 
-// ---------- hyperacusis ----------
-const freqs=[500,1000,2000,4000,8000];let hIndex=0;const ratings=[];
-document.getElementById('hyperPlay').onclick=()=>{if(hIndex>=freqs.length)return;playTone(freqs[hIndex]);setTimeout(stopTone,800);document.getElementById('hyperHz').textContent=(freqs[hIndex]/1000).toFixed(1);};
-document.getElementById('hyperReplay').onclick=()=>{if(hIndex<freqs.length){playTone(freqs[hIndex]);setTimeout(stopTone,800);}};
-document.getElementById('toWords').onclick=()=>{stopTone();document.getElementById('hyper').classList.add('hidden');document.getElementById('words').classList.remove('hidden');startWords();};
-function drawHyper(){const ctx=document.getElementById('hyperChart').getContext('2d');ctx.clearRect(0,0,700,200);ctx.fillStyle='#94a3b8';ratings.forEach((r,i)=>{const h=40+i*25;ctx.fillRect(60+i*120,180-h,50,h);ctx.fillText(r.hz/1000+'k',65+i*120,190);});}
+// --- Hyperacusis ---
+const freqs=[500,1000,2000,4000,8000];let fIndex=0;let arvio=[];
+function playNextFreq(){
+ if(fIndex>=freqs.length)return;
+ playTone(freqs[fIndex]);setTimeout(stopTone,800);
+ document.getElementById("freqLabel").textContent=freqs[fIndex]/1000+" kHz";
+}
+function rate(v){
+ if(fIndex<freqs.length){arvio.push(freqs[fIndex]+" Hz: "+v);fIndex++;
+  if(fIndex>=freqs.length)alert("Testi valmis – siirry sanatestiin.");}
+}
 
-// ---------- words ----------
-const wordsEN=["cat","dog","car","tree","book","house","road","chair","door","sun"];
-const wordsFI=["kissa","koira","auto","puu","kirja","talo","tie","tuoli","ovi","aurinko"];
-let list=[],idx=0,ok=0;
-function speak(w,lang){const u=new SpeechSynthesisUtterance(w);u.lang=lang==='FI'?'fi-FI':'en-US';window.speechSynthesis.speak(u);}
-function startWords(){const lang=LANG;list=(lang==='FI'?wordsFI:wordsEN);idx=0;ok=0;nextWord();}
-function nextWord(){if(idx>=list.length){finish();return;}document.getElementById('wIdx').textContent=idx+1;speak(list[idx],LANG);}
-document.getElementById('playWord').onclick=()=>speak(list[idx],LANG);
-document.getElementById('repeatWord').onclick=()=>speak(list[idx],LANG);
-function submit(skip){const ans=skip?'skip':document.getElementById('answer').value.trim();if(ans.toLowerCase()===list[idx].toLowerCase())ok++;idx++;document.getElementById('answer').value='';nextWord();}
-document.getElementById('submitAns').onclick=()=>submit(false);
-document.getElementById('skipAns').onclick=()=>submit(true);
-function finish(){document.getElementById('words').classList.add('hidden');document.getElementById('results').classList.remove('hidden');document.getElementById('summary').textContent='Score '+ok+'/10';drawEarChart();}
-function drawEarChart(){const ctx=document.getElementById('earChart').getContext('2d');ctx.clearRect(0,0,700,220);ctx.fillStyle='#60a5fa';const h=(ok/10)*180;ctx.fillRect(100,200-h,80,h);ctx.fillStyle='#111';ctx.fillText(ok+'/10',110,190-h);}
-document.getElementById('restart').onclick=()=>location.reload();
+// --- Sanatesti ---
+const sanat=["kissa","koira","talo","kirja","tuoli","auto","tie","ovi","sänky","kuu",
+"aurinko","sade","lumi","kello","lehti","matto","sieni","peili","kukka","lasi",
+"kala","hevonen","laiva","leipä","pöytä","silta","ranta","metsä","järvi","kauppa",
+"koulu","kuva","puu","lääkäri","juna","bussi","polku","portti","ikkuna","musiikki",
+"paperi","kynä","perhe","ystävä","valo","ääni","katto","laulu","sormus","nappi"];
+let i=0,ok=0;
+function speak(txt){const u=new SpeechSynthesisUtterance(txt);u.lang="fi-FI";speechSynthesis.speak(u);}
+function playWord(){speak(sanat[i]);document.getElementById("wordNum").textContent="Sana "+(i+1)+" / "+sanat.length;}
+function submitAns(){
+ const a=document.getElementById("ans").value.trim().toLowerCase();
+ if(a===sanat[i])ok++;
+ document.getElementById("ans").value="";
+ i++;if(i>=sanat.length)showRes();else playWord();
+}
+function skip(){i++;if(i>=sanat.length)showRes();else playWord();}
+
+// --- Tulokset ---
+function showRes(){
+ next('result');
+ document.getElementById("score").textContent="Oikein: "+ok+" / "+sanat.length;
+ document.getElementById("hyperRes").textContent="Ääniherkkyys: "+arvio.join(", ");
+}
 </script>
-</body>
+</bod y>
 </html>
