@@ -1,348 +1,231 @@
+<!-- Hearing Lab v6.2 – November 2025 – Light Theme – Bilingual -->
 <!doctype html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Hearing Lab v6 • Bilingual • Light</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hearing Lab v6.2 – Light Theme – Bilingual</title>
 <style>
-  :root{
-    --bg:#fafbfe; --card:#ffffff; --muted:#5b6573; --text:#111827; --sub:#374151;
-    --line:#e5e7eb; --accent:#2563eb; --ok:#16a34a; --bad:#ef4444; --warn:#f59e0b;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;background:var(--bg);color:var(--text)}
-  .wrap{max-width:1100px;margin:24px auto;padding:20px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  h1{margin:0;font-size:clamp(22px,3vw,30px);color:var(--sub)}
-  .pill{padding:6px 10px;border-radius:999px;background:#eef2ff;border:1px solid #dbeafe;color:#334155;font-size:12px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(17,24,39,.05)}
-  .section{margin-top:14px}
-  .btns{display:flex;gap:10px;flex-wrap:wrap}
-  button{background:#f3f4f6;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
-  button.primary{background:linear-gradient(135deg,#60a5fa,#22c55e);border:none;color:white}
-  button:disabled{opacity:.55;cursor:not-allowed}
-  .small{font-size:13px;color:var(--muted)}
-  .muted{color:var(--muted)}
-  .hidden{display:none}
-  .grid{display:grid;gap:16px}
-  @media(min-width:1000px){.grid{grid-template-columns:1.1fr .9fr}}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  input[type=text]{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:16px;width:min(560px,100%)}
-  table{width:100%;border-collapse:collapse}
-  th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left}
-  tr.ok td{background:#ecfdf5}
-  tr.bad td{background:#fef2f2}
-  tr.skip td{background:#f3f4f6}
-  .banner{position:fixed;top:10px;right:10px} 
-  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#f8fafc;color:#334155;font-size:12px}
-  .note{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:10px}
-  canvas{max-width:100%;height:auto}
+:root{
+  --bg:#fafbfe;--card:#ffffff;--line:#e5e7eb;--muted:#5b6573;--text:#111827;
+  --accent:#2563eb;--ok:#16a34a;--bad:#ef4444;--warn:#f59e0b;
+}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;background:var(--bg);color:var(--text)}
+.wrap{max-width:1000px;margin:0 auto;padding:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+button{background:#f3f4f6;border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:4px;cursor:pointer;font-weight:600}
+button.primary{background:linear-gradient(135deg,#60a5fa,#22c55e);color:#fff;border:none}
+button:disabled{opacity:.5;cursor:not-allowed}
+.small{font-size:13px;color:var(--muted)}
+.hidden{display:none}
+input[type=text]{padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:15px}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left}
+tr.ok td{background:#ecfdf5}tr.bad td{background:#fef2f2}tr.skip td{background:#f3f4f6}
+canvas{max-width:100%;height:auto}
+.langbtn{border:none;background:#e0e7ff;color:#1e3a8a;border-radius:8px;padding:4px 10px;font-weight:600;margin-left:4px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Hearing Lab v6</h1>
-    <div class="pill">November 2025 • Bilingual (EN + FI) • Light theme</div>
-  </header>  <!-- Instructions -->  <section id="instructions" class="card">
-    <div class="row"><div class="badge">🎧 Test Instructions • Kuulotestin ohjeet</div></div>
-    <ol class="small">
-      <li><b>Use good headphones in a quiet room.</b><br><span class="muted">(Käytä laadukkaita kuulokkeita hiljaisessa tilassa.)</span></li>
-      <li><b>Set device volume ~50%.</b><br><span class="muted">(Säädä laitteen ääni noin puoleenväliin.)</span></li>
-      <li><b>During calibration, pick a comfortable level (never loud).</b><br><span class="muted">(Kalibroinnissa valitse miellyttävä taso – ei kovaa.)</span></li>
-      <li><b>You can always choose “I can’t tell / Ohi”.</b><br><span class="muted">(Voit aina valita “En erota / Ohi”.)</span></li>
-      <li><b>Parts:</b> Calibration → Hyperacusis (sensitivity) → Word test (Left / Right / Both) → Results & History.<br><span class="muted">(Osat: Kalibrointi → Ääniherkkyys → Sanatesti (Vasen / Oikea / Molemmat) → Tulokset & historia.)</span></li>
-    </ol>
-    <div class="btns"><button id="startBtn" class="primary">▶ Start test</button></div>
-  </section>  <!-- Calibration -->  <section id="calibration" class="card hidden">
-    <div class="row"><button id="back1">← Return to instructions</button><div class="badge">Calibration</div></div>
-    <p class="small">Play a 1 kHz tone and select how it feels. You can change system volume if needed.<br><span class="muted">Soita 1 kHz -ääni ja valitse miltä se tuntuu. Voit säätää laitteen ääntä tarvittaessa.</span></p>
-    <div class="btns">
-      <button id="toneBtn" class="primary">▶ Play / Stop 1 kHz tone</button>
-      <button data-cal="barely">Barely audible</button>
-      <button data-cal="ok">Comfortable</button>
-      <button data-cal="loud">Loud but OK</button>
-      <button id="toHyper">Next → Hyperacusis</button>
-    </div>
-    <div class="note small" style="margin-top:10px">Safety: if anything feels unpleasant, stop immediately or lower the volume.<br><span class="muted">Turvallisuus: jos ääni tuntuu epämiellyttävältä, lopeta heti tai hiljennä.</span></div>
-  </section>  <!-- Hyperacusis / loudness sensitivity -->  <section id="hyper" class="card hidden">
-    <div class="row"><button id="back2">← Return to instructions</button><div class="badge">Hyperacusis • Ääniherkkyys</div></div>
-    <p class="small">We will play short tones at 0.5, 1, 2, 4, 8 kHz. For each, pick how it feels. We do NOT use painful levels.<br><span class="muted">Soitetaan lyhyitä ääniä taajuuksilla 0.5–8 kHz. Valitse jokaiselle, miltä se tuntuu. Kivuliaita tasoja ei käytetä.</span></p>
-    <div class="btns"><button id="hyperPlay" class="primary">▶ Play next tone</button>
-      <button data-hlx="barely">Barely audible</button>
-      <button data-hlx="ok">Comfortable</button>
-      <button data-hlx="loud">Loud but OK</button>
-      <button data-hlx="unpleasant">Unpleasant</button>
-      <button id="toWords">Next → Word test</button>
-    </div>
-    <div class="small">Progress: <span id="hyperProg">0</span>/5 • Current freq: <span id="hyperHz">–</span> kHz</div>
-    <div class="section"><canvas id="hyperChart" width="700" height="220"></canvas></div>
-  </section>  <!-- Word test (open answer) -->  <section id="words" class="card hidden">
-    <div class="row"><button id="back3">← Return to instructions</button><div class="badge">Word test • Sanatesti</div></div>
-    <div class="row">
-      <div class="small">Ear mode: <span id="earLabel">Left</span> • Word <span id="wIdx">0</span>/<span id="wTotal">50</span> • Correct <span id="wOk">0</span></div>
-      <div class="pill" id="langBadge">EN + FI</div>
-    </div>
-    <div class="btns">
-      <button id="playWord" class="primary">▶ Play word</button>
-      <button id="repeatWord" disabled>⟳ Repeat</button>
-    </div>
-    <div class="row">
-      <input id="answer" type="text" placeholder="Type what you heard / Kirjoita mitä kuulit" autocomplete="off" />
-      <button id="submitAns">Submit</button>
-      <button id="skipAns">I can’t tell / Ohi</button>
-    </div>
-    <div class="small muted">We do not show correctness now; see Results after each ear. <br><span class="muted">Oikeellisuus näkyy vasta tuloksissa (ei heti).</span></div>
-  </section>  <!-- Results -->  <section id="results" class="card hidden">
-    <div class="row"><button id="back4">← Return to instructions</button><div class="badge">Results • Tulokset</div></div>
-    <div id="summary"></div>
-    <div class="section"><canvas id="earChart" width="700" height="240"></canvas></div>
-    <h4>Details</h4>
-    <table id="detailTable"><thead><tr><th>#</th><th>Ear</th><th>Lang</th><th>Target</th><th>Your answer</th><th>Outcome</th></tr></thead><tbody></tbody></table>
-    <div class="btns" style="margin-top:12px"><button id="nextStage" class="primary">Continue</button><button id="restart">Restart full test</button></div>
-    <div class="section card" style="margin-top:12px">
-      <h4 style="margin:0 0 6px 0">Previous sessions (local only)</h4>
-      <div id="history" class="small"></div>
-    </div>
-  </section>
-</div><script>
-// ---------------------------------------------------------
-// Audio setup (tones for calibration & hyperacusis)
-// ---------------------------------------------------------
-let actx, osc, gain, panner;
-function ensureAudio(){
-  if(actx) return;
-  actx = new (window.AudioContext||window.webkitAudioContext)();
-  osc = actx.createOscillator();
-  osc.type = 'sine'; osc.frequency.value = 1000; // default 1 kHz
-  gain = actx.createGain(); gain.gain.value = 0; // muted until play
-  panner = actx.createStereoPanner ? actx.createStereoPanner() : null;
-  if(panner){ osc.connect(gain).connect(panner).connect(actx.destination); }
-  else { osc.connect(gain).connect(actx.destination); }
-  osc.start();
-}
-function setEar(mode){ if(!panner) return; panner.pan.value = mode==='left'?-1 : mode==='right'?1 : 0; }
-function playTone(freq, level=0.12){ ensureAudio(); if(actx.state==='suspended') actx.resume(); osc.frequency.value = freq; gain.gain.cancelScheduledValues(actx.currentTime); gain.gain.setTargetAtTime(level, actx.currentTime, 0.01); }
-function stopTone(){ if(!gain) return; gain.gain.setTargetAtTime(0, (actx?actx.currentTime:0), 0.02); }
+<h1>Hearing Lab v6.2 • Light Bilingual</h1>
 
-// ---------------------------------------------------------
-// Word lists (50 EN + 50 FI)
-// ---------------------------------------------------------
-const WORDS_EN = [
-  'cat','cup','ship','note','chair','tree','bear','goat','beat','coat',
-  'fish','dog','house','book','car','road','shoe','door','bed','moon',
-  'sun','rain','snow','bell','leaf','phone','tone','stone','home','foam',
-  'glass','table','bread','horse','river','lake','cloud','garden','window','music',
-  'paper','pencil','school','street','market','flower','picture','family','friend','light'
-];
-const WORDS_FI = [
-  'kala','koira','talo','kirja','tuoli','auto','tie','ovi','sänky','kuu',
-  'aurinko','sade','lumi','kello','lehti','matto','sieni','peili','kukka','lasi',
-  'kissa','hevonen','laiva','leipä','pöytä','silta','ranta','metsä','järvi','kauppa',
-  'koulu','kuva','puu','lääkäri','juna','bussi','polku','portti','ikkuna','musiikki',
-  'paperi','kynä','perhe','ystävä','valo','ääni','katto','kelloa','laulu','sormus'
-];
+<!-- language selector -->
+<div>
+ 🌐 Language:
+ <button id="setEN" class="langbtn">English</button>
+ <button id="setFI" class="langbtn">Suomi</button>
+</div>
 
-// ---------------------------------------------------------
-// UI Elements
-// ---------------------------------------------------------
-const E = id => document.getElementById(id);
-const instructions = E('instructions');
-const calibration  = E('calibration');
-const hyper        = E('hyper');
-const words        = E('words');
-const results      = E('results');
+<section id="instructions" class="card">
+ <h2 id="t_intro"></h2>
+ <ol id="t_steps" class="small"></ol>
+ <div><button id="startBtn" class="primary"></button></div>
+</section>
 
-// Navigation
-E('startBtn').onclick = ()=>{ instructions.classList.add('hidden'); calibration.classList.remove('hidden'); };
-E('back1').onclick = E('back2').onclick = E('back3').onclick = E('back4').onclick = ()=>{
-  [calibration,hyper,words,results].forEach(s=>s.classList.add('hidden'));
-  instructions.classList.remove('hidden');
+<section id="calibration" class="card hidden">
+ <h3 id="t_calib"></h3>
+ <p id="t_calibInfo" class="small"></p>
+ <div>
+  <button id="toneBtn" class="primary">▶ Play / Stop 1 kHz</button>
+  <button data-cal="barely">Barely audible</button>
+  <button data-cal="ok">Comfortable</button>
+  <button data-cal="loud">Loud OK</button>
+  <button id="toHyper">Next → Hyperacusis</button>
+ </div>
+</section>
+
+<section id="hyper" class="card hidden">
+ <h3 id="t_hyper"></h3>
+ <p id="t_hyperInfo" class="small"></p>
+ <div>
+  <button id="hyperPlay" class="primary">▶ Play next tone</button>
+  <button id="hyperReplay">⟳ Replay</button>
+  <button data-hlx="barely">Barely</button>
+  <button data-hlx="ok">Comfortable</button>
+  <button data-hlx="loud">Loud OK</button>
+  <button data-hlx="unpleasant">Unpleasant</button>
+  <button id="toWordSetup">Next → Word Test</button>
+ </div>
+ <div class="small">Progress: <span id="hyperProg">0</span>/5 freq <span id="hyperHz">–</span> kHz</div>
+ <canvas id="hyperChart" width="700" height="200"></canvas>
+</section>
+
+<section id="setupWords" class="card hidden">
+ <h3 id="t_setup"></h3>
+ <p class="small" id="t_setupInfo"></p>
+ <div>
+  <label id="t_lang"></label>
+  <select id="wordLang">
+   <option value="EN">English</option>
+   <option value="FI">Suomi</option>
+  </select>
+ </div>
+ <div>
+  <label id="t_noise"></label>
+  <select id="noiseSel">
+   <option value="none">None</option>
+   <option value="white">White noise</option>
+   <option value="cafe">Café noise</option>
+   <option value="street">Street noise</option>
+  </select>
+ </div>
+ <div>
+  <label id="t_voice"></label>
+  <select id="voiceSel">
+   <option value="random">Random</option>
+   <option value="male">Male</option>
+   <option value="female">Female</option>
+  </select>
+ </div>
+ <div><button id="toWords" class="primary"></button></div>
+</section>
+
+<section id="words" class="card hidden">
+ <h3 id="t_wordtest"></h3>
+ <div class="small"><span id="t_ear"></span> <span id="earLabel">Left</span> • <span id="t_word"></span> <span id="wIdx">0</span>/50 • <span id="t_ok"></span> <span id="wOk">0</span></div>
+ <div>
+  <button id="playWord" class="primary">▶ Play</button>
+  <button id="repeatWord">⟳ Repeat</button>
+ </div>
+ <div>
+  <input id="answer" type="text" placeholder="Type / Kirjoita" autocomplete="off">
+  <button id="submitAns">Submit</button>
+  <button id="skipAns">Ohi / I can’t tell</button>
+ </div>
+</section>
+
+<section id="results" class="card hidden">
+ <h3 id="t_results"></h3>
+ <div id="summary"></div>
+ <canvas id="earChart" width="700" height="220"></canvas>
+ <table id="detailTable"><thead><tr><th>#</th><th>Ear</th><th>Word</th><th>Answer</th><th>Outcome</th></tr></thead><tbody></tbody></table>
+ <div><button id="restart" class="primary"></button></div>
+</section>
+</div>
+
+<script>
+/* ---------- text dictionary ---------- */
+const T = {
+ EN:{
+  intro:"Test Instructions",
+  steps:[
+   "Use good headphones in a quiet room.",
+   "Set volume to about 50 %.",
+   "During calibration choose a comfortable level.",
+   "You can always choose 'I can’t tell'.",
+   "Steps: Calibration → Sensitivity → Word test → Results."
+  ],
+  start:"▶ Start test",calib:"Calibration",
+  calibInfo:"Play 1 kHz tone and choose how it feels.",
+  hyper:"Hyperacusis / Loudness sensitivity",
+  hyperInfo:"Play five tones (0.5 – 8 kHz) and rate each.",
+  setup:"Word test setup",setupInfo:"Choose language, background noise and voice type.",
+  lang:"Language:",noise:"Background noise:",voice:"Voice type:",
+  cont:"▶ Continue",wordtest:"Word test",ear:"Ear:",word:"Word:",ok:"Correct:",
+  results:"Results",restart:"Restart"
+ },
+ FI:{
+  intro:"Kuulotestin ohjeet",
+  steps:[
+   "Käytä hyviä kuulokkeita hiljaisessa tilassa.",
+   "Säädä äänenvoimakkuus noin puoleen.",
+   "Kalibroinnissa valitse miellyttävä tasapiste.",
+   "Voit aina valita 'Ohi / En erota'.",
+   "Vaiheet: Kalibrointi → Ääniherkkyys → Sanatesti → Tulokset."
+  ],
+  start:"▶ Aloita testi",calib:"Kalibrointi",
+  calibInfo:"Soita 1 kHz ääni ja valitse miltä tuntuu.",
+  hyper:"Ääniherkkyystesti",hyperInfo:"Soitetaan viisi ääntä (0.5 – 8 kHz).",
+  setup:"Sanatestin asetukset",setupInfo:"Valitse kieli, taustamelu ja äänen tyyppi.",
+  lang:"Kieli:",noise:"Taustamelu:",voice:"Äänen tyyppi:",
+  cont:"▶ Jatka",wordtest:"Sanatesti",ear:"Korva:",word:"Sana:",ok:"Oikein:",
+  results:"Tulokset",restart:"Aloita alusta"
+ }
 };
-
-// ---------------------------------------------------------
-// Calibration
-// ---------------------------------------------------------
-let comfort = null;
-E('toneBtn').onclick = ()=>{ ensureAudio(); if(actx.state==='suspended') actx.resume(); if(gain.gain.value>0){ stopTone(); } else { setEar('both'); playTone(1000, 0.12);} };
-Array.from(calibration.querySelectorAll('[data-cal]')).forEach(btn=>{
-  btn.onclick = ()=>{ comfort = btn.getAttribute('data-cal'); };
-});
-E('toHyper').onclick = ()=>{ stopTone(); calibration.classList.add('hidden'); hyper.classList.remove('hidden'); };
-
-// ---------------------------------------------------------
-// Hyperacusis (0.5, 1, 2, 4, 8 kHz) — ratings stored and charted
-// ---------------------------------------------------------
-const HZ = [0.5,1,2,4,8];
-let hIndex = 0;
-let hyperRatings = []; // {hz, rating}
-const hyperChart = document.getElementById('hyperChart').getContext('2d');
-function drawHyper(){
-  const ctx = hyperChart; const w=ctx.canvas.width, h=ctx.canvas.height; ctx.clearRect(0,0,w,h);
-  // axes
-  ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(50,10); ctx.lineTo(50,h-30); ctx.lineTo(w-10,h-30); ctx.stroke();
-  // labels
-  ctx.fillStyle = '#334155'; ctx.font='12px system-ui'; ctx.fillText('Comfort scale →', 60, 16);
-  ctx.fillText('Freq (kHz)', w-110, h-10);
-  // bars
-  const map={'barely':1,'ok':2,'loud':3,'unpleasant':4};
-  const bx = (i)=> 60 + i*((w-100)/HZ.length);
-  hyperRatings.forEach((r,i)=>{
-    const val = map[r.rating]||0; const x=bx(i); const barw=40; const barh= val*30; const y=(h-40)-barh;
-    ctx.fillStyle = val<=2?'#22c55e': val===3?'#f59e0b':'#ef4444';
-    ctx.fillRect(x,y,barw,barh);
-    ctx.fillStyle='#475569'; ctx.fillText(String(HZ[i]), x+8, h-12);
-  });
+let LANG = localStorage.getItem('hl_lang')||'FI';
+function setLang(l){
+ LANG=l;localStorage.setItem('hl_lang',l);
+ const t=T[LANG];
+ document.getElementById('t_intro').textContent=t.intro;
+ const list=document.getElementById('t_steps');
+ list.innerHTML=t.steps.map(s=>`<li>${s}</li>`).join('');
+ document.getElementById('startBtn').textContent=t.start;
+ ['calib','calibInfo','hyper','hyperInfo','setup','setupInfo','lang','noise','voice','wordtest','ear','word','ok','results','restart']
+ .forEach(k=>{const el=document.getElementById('t_'+k);if(el)el.textContent=t[k];});
+ document.getElementById('toWords')?.textContent=t.cont;
+ document.getElementById('toWordSetup')?.textContent=t.cont;
 }
-E('hyperPlay').onclick = ()=>{
-  if(hIndex>=HZ.length) return; ensureAudio(); if(actx.state==='suspended') actx.resume(); setEar('both'); E('hyperHz').textContent = String(HZ[hIndex]); playTone(HZ[hIndex]*1000, 0.10); setTimeout(()=>stopTone(), 800);
-};
-Array.from(hyper.querySelectorAll('[data-hlx]')).forEach(btn=>{
-  btn.onclick = ()=>{ if(hIndex>=HZ.length) return; const rating = btn.getAttribute('data-hlx'); hyperRatings.push({hz:HZ[hIndex], rating}); hIndex++; E('hyperProg').textContent=hIndex; drawHyper(); if(hIndex>=HZ.length){ /* done */ }
-  };
-});
-E('toWords').onclick = ()=>{ hyper.classList.add('hidden'); startWordBlock(); };
+document.getElementById('setEN').onclick=()=>setLang('EN');
+document.getElementById('setFI').onclick=()=>setLang('FI');
+setLang(LANG);
 
-// ---------------------------------------------------------
-// Word test (open answer) — 50 words per language, ear cycles Left -> Right -> Both
-// ---------------------------------------------------------
-const EAR_SEQ = ['left','right','both'];
-let earStep = 0; // 0=L,1=R,2=B
-let wList = []; // the 50 items (each item: {lang:'EN'|'FI', word})
-let wIdx = 0; let wOk = 0; let current = null;
-let allResults = []; // per ear accumulation
+/* ---------- audio setup ---------- */
+let actx,osc,gain;
+function ensureAudio(){if(actx)return;actx=new(window.AudioContext||window.webkitAudioContext)();
+osc=actx.createOscillator();gain=actx.createGain();osc.connect(gain).connect(actx.destination);osc.start();gain.gain.value=0;}
+function playTone(f){ensureAudio();osc.frequency.value=f;gain.gain.setValueAtTime(0.1,actx.currentTime);}
+function stopTone(){if(!gain)return;gain.gain.setValueAtTime(0,actx.currentTime);}
 
-function buildWordSet(){
-  // pick 25 random EN + 25 random FI = 50
-  const pick = (n, arr)=>{ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a.slice(0,n); };
-  const en = pick(50, WORDS_EN); // full 50
-  const fi = pick(50, WORDS_FI); // full 50
-  // interleave roughly: alternate EN/FI
-  wList = [];
-  for(let i=0;i<50;i++){
-    const lang = (i%2===0)?'EN':'FI';
-    const word = lang==='EN'? en[i] : fi[i];
-    wList.push({lang, word});
-  }
+/* ---------- calibration ---------- */
+document.getElementById('startBtn').onclick=()=>{document.getElementById('instructions').classList.add('hidden');document.getElementById('calibration').classList.remove('hidden');};
+document.getElementById('toneBtn').onclick=()=>{ensureAudio();if(gain.gain.value>0)stopTone();else playTone(1000);};
+document.getElementById('toHyper').onclick=()=>{stopTone();document.getElementById('calibration').classList.add('hidden');document.getElementById('hyper').classList.remove('hidden');};
+
+/* ---------- hyperacusis ---------- */
+const freqs=[500,1000,2000,4000,8000];let hIndex=0;const ratings=[];
+document.getElementById('hyperPlay').onclick=()=>{if(hIndex>=freqs.length)return;playTone(freqs[hIndex]);setTimeout(stopTone,800);document.getElementById('hyperHz').textContent=(freqs[hIndex]/1000).toFixed(1);};
+document.getElementById('hyperReplay').onclick=()=>{if(hIndex<freqs.length){playTone(freqs[hIndex]);setTimeout(stopTone,800);}};
+document.querySelectorAll('[data-hlx]').forEach(b=>b.onclick=()=>{if(hIndex>=freqs.length)return;ratings.push({hz:freqs[hIndex],v:b.dataset.hlx});hIndex++;document.getElementById('hyperProg').textContent=hIndex;drawHyper();if(hIndex>=freqs.length)stopTone();});
+document.getElementById('toWordSetup').onclick=()=>{document.getElementById('hyper').classList.add('hidden');document.getElementById('setupWords').classList.remove('hidden');};
+function drawHyper(){const ctx=document.getElementById('hyperChart').getContext('2d');ctx.clearRect(0,0,700,200);ctx.fillStyle='#94a3b8';ratings.forEach((r,i)=>{const h=40+['barely','ok','loud','unpleasant'].indexOf(r.v)*30;ctx.fillRect(60+i*120,180-h,50,h);ctx.fillText(r.hz/1000+'k',65+i*120,190);});}
+
+/* ---------- word setup ---------- */
+document.getElementById('toWords').onclick=()=>{document.getElementById('setupWords').classList.add('hidden');document.getElementById('words').classList.remove('hidden');startWords();};
+
+/* ---------- background noise loader ---------- */
+let noiseAudio=null;
+async function playNoise(type){
+ if(type==='none'){if(noiseAudio){noiseAudio.pause();noiseAudio=null;}return;}
+ if(noiseAudio){noiseAudio.pause();}
+ noiseAudio=new Audio('sounds/'+type+'.mp3');noiseAudio.loop=true;noiseAudio.volume=0.3;await noiseAudio.play();
 }
 
-function setEarLabel(){ E('earLabel').textContent = earStep===0?'Left': earStep===1?'Right':'Both'; }
-function speakWord(item){
-  if(!('speechSynthesis' in window)) { alert('Speech synthesis not supported'); return; }
-  const u = new SpeechSynthesisUtterance(item.word);
-  u.lang = item.lang==='EN'? 'en-US' : 'fi-FI';
-  u.rate = 0.95; u.pitch = 1.0;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
-}
-
-function startWordBlock(){
-  // reset for new ear block or initial
-  if(earStep===0){ buildWordSet(); allResults = []; }
-  wIdx = 0; wOk = 0; setEar(EAR_SEQ[earStep]); words.classList.remove('hidden'); setEarLabel(); E('wTotal').textContent = '50'; E('wOk').textContent = '0'; nextWord();
-}
-
-function nextWord(){
-  if(wIdx>=50){ // block done
-    // store block results summary then go to results screen for this block
-    showResultsBlock();
-    return;
-  }
-  current = wList[wIdx];
-  E('wIdx').textContent = String(wIdx+1);
-  E('repeatWord').disabled = false;
-  // auto play on advance
-  speakWord(current);
-}
-
-E('playWord').onclick = ()=> speakWord(current || wList[wIdx] || {lang:'EN',word:'test'});
-E('repeatWord').onclick = ()=> current && speakWord(current);
-E('submitAns').onclick = submitAnswer;
-E('skipAns').onclick   = ()=> submitAnswer(true);
-E('answer').addEventListener('keydown', (ev)=>{ if(ev.key==='Enter'){ submitAnswer(); }});
-
-function submitAnswer(skipped=false){
-  const val = (E('answer').value||'').trim();
-  const ans = skipped? 'skip' : (val||'');
-  const ok = (!skipped && ans.toLowerCase()===current.word.toLowerCase());
-  if(ok) wOk++;
-  allResults.push({ ear: EAR_SEQ[earStep], lang: current.lang, target: current.word, answer: ans||'(empty)', outcome: skipped? 'skip' : (ok?'ok':'bad') });
-  E('wOk').textContent = String(wOk);
-  E('answer').value='';
-  wIdx++;
-  nextWord();
-}
-
-// ---------------------------------------------------------
-// Results block & charts
-// ---------------------------------------------------------
-let sessionRuns = []; // collected after each ear block
-function showResultsBlock(){
-  words.classList.add('hidden'); results.classList.remove('hidden');
-  // summarize for this ear
-  const ear = EAR_SEQ[earStep];
-  const subset = allResults.slice(earStep*50, earStep*50 + 50);
-  const ok = subset.filter(r=>r.outcome==='ok').length;
-  const bad = subset.filter(r=>r.outcome==='bad').length;
-  const skip = subset.filter(r=>r.outcome==='skip').length;
-  const pct = Math.round(100*ok/Math.max(1,subset.length));
-  E('summary').innerHTML = `<div class="badge">Ear: <b>${ear}</b> • OK ${ok} • Wrong ${bad} • Ohi ${skip} → <b>${pct}%</b></div>`;
-  // fill table
-  const tbody = results.querySelector('#detailTable tbody');
-  tbody.innerHTML = subset.map((r,i)=>`<tr class="${r.outcome}"><td>${i+1}</td><td>${r.ear}</td><td>${r.lang}</td><td>${r.target}</td><td>${r.answer}</td><td>${r.outcome}</td></tr>`).join('');
-  // draw ear accuracy chart across finished ears
-  sessionRuns[earStep] = { ear, pct };
-  drawEarChart();
-  // history update only when all three ears done
-}
-
-function drawEarChart(){
-  const ctx = document.getElementById('earChart').getContext('2d');
-  const w=ctx.canvas.width, h=ctx.canvas.height; ctx.clearRect(0,0,w,h);
-  ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(50,10); ctx.lineTo(50,h-30); ctx.lineTo(w-10,h-30); ctx.stroke();
-  ctx.fillStyle='#334155'; ctx.font='12px system-ui'; ctx.fillText('Accuracy %', 8, 20); ctx.fillText('Ear blocks', w-90, h-10);
-  const bx = (i)=> 80 + i*140; const max=100;
-  ['left','right','both'].forEach((ear,i)=>{
-    const item = sessionRuns[i]; const val = item? item.pct : 0; const barw=60; const barh=(val/max)*(h-60); const x=bx(i), y=(h-30)-barh;
-    ctx.fillStyle = '#60a5fa'; ctx.fillRect(x,y,barw,barh);
-    ctx.fillStyle = '#111827'; ctx.fillText(ear.toUpperCase(), x+5, h-10);
-    ctx.fillText(val? val+ '%' : '—', x+10, y-6);
-  });
-}
-
-E('nextStage').onclick = ()=>{
-  // proceed to next ear, or finish all
-  results.classList.add('hidden');
-  earStep++;
-  if(earStep<EAR_SEQ.length){ startWordBlock(); }
-  else { // finished all -> save to history and show overall summary
-    saveHistory();
-    // overall final view: show last block summary already; add history list
-    renderHistory();
-    results.classList.remove('hidden');
-    E('nextStage').disabled = true; E('nextStage').textContent = 'Completed';
-  }
-};
-
-E('restart').onclick = ()=> location.reload();
-
-// ---------------------------------------------------------
-// History (localStorage)
-// ---------------------------------------------------------
-function saveHistory(){
-  const date = new Date().toISOString().slice(0,10);
-  const left = sessionRuns[0]?.pct||0, right=sessionRuns[1]?.pct||0, both=sessionRuns[2]?.pct||0;
-  const entry = { date, left, right, both, comfort, hyper: hyperRatings };
-  const arr = JSON.parse(localStorage.getItem('hearingLabV6')||'[]');
-  arr.unshift(entry);
-  localStorage.setItem('hearingLabV6', JSON.stringify(arr.slice(0,20)));
-}
-function renderHistory(){
-  const box = E('history');
-  const arr = JSON.parse(localStorage.getItem('hearingLabV6')||'[]');
-  if(!arr.length){ box.textContent='No previous sessions.'; return; }
-  box.innerHTML = arr.map(r=>`<span class="pill" style="display:inline-block;margin:4px 6px 0 0">${r.date} • L ${r.left}% • R ${r.right}% • B ${r.both}%</span>`).join('');
-}
-</script></body>
+/* ---------- word list ---------- */
+const wordsEN=[\"cat\",\"dog\",\"car\",\"tree\",\"book\",\"house\",\"road\",\"chair\",\"door\",\"sun\",...Array(40).fill('test')];
+const wordsFI=[\"kissa\",\"koira\",\"auto\",\"puu\",\"kirja\",\"talo\",\"tie\",\"tuoli\",\"ovi\",\"aurinko\",...Array(40).fill('testi')];
+let list=[],idx=0,ok=0;
+function speak(w,lang){const u=new SpeechSynthesisUtterance(w);u.lang=lang==='FI'?'fi-FI':'en-US';window.speechSynthesis.speak(u);}
+function startWords(){const lang=document.getElementById('wordLang').value;const arr=(lang==='FI'?wordsFI:wordsEN).slice(0,50);list=arr;idx=0;ok=0;playNoise(document.getElementById('noiseSel').value);nextWord(lang);}
+function nextWord(lang){if(idx>=list.length){finish();return;}const w=list[idx];document.getElementById('wIdx').textContent=idx+1;document.getElementById('wOk').textContent=ok;speak(w,document.getElementById('wordLang').value);}
+document.getElementById('playWord').onclick=()=>speak(list[idx],document.getElementById('wordLang').value);
+document.getElementById('repeatWord').onclick=()=>speak(list[idx],document.getElementById('wordLang').value);
+function submit(skip){const ans=skip?'skip':document.getElementById('answer').value.trim();if(ans.toLowerCase()===list[idx].toLowerCase())ok++;idx++;document.getElementById('answer').value='';nextWord();}
+document.getElementById('submitAns').onclick=()=>submit(false);
+document.getElementById('skipAns').onclick=()=>submit(true);
+function finish(){if(noiseAudio){noiseAudio.pause();}document.getElementById('words').classList.add('hidden');document.getElementById('results').classList.remove('hidden');document.getElementById('summary').textContent='Score '+ok+'/50';drawEarChart();}
+function drawEarChart(){const ctx=document.getElementById('earChart').getContext('2d');ctx.clearRect(0,0,700,220);ctx.fillStyle='#60a5fa';const h=(ok/50)*180;ctx.fillRect(100,200-h,80,h);ctx.fillStyle='#111';ctx.fillText(ok+'/50',110,190-h);}
+document.getElementById('restart').onclick=()=>location.reload();
+</script>
+</body>
 </html>
