@@ -1,38 +1,31 @@
-<!-- Hearing Lab v6.2 – November 2025 – Light Theme – Bilingual -->
+<!-- Hearing Lab v6.3 – November 2025 – Build #2300 -->
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hearing Lab v6.2 – Light Theme – Bilingual</title>
+<title>Hearing Lab v6.3 • Light Bilingual • Build #2300</title>
 <style>
 :root{
-  --bg:#fafbfe;--card:#ffffff;--line:#e5e7eb;--muted:#5b6573;--text:#111827;
-  --accent:#2563eb;--ok:#16a34a;--bad:#ef4444;--warn:#f59e0b;
+  --bg:#fafbfe;--card:#fff;--line:#e5e7eb;--muted:#5b6573;--text:#111827;
+  --accent:#2563eb;--ok:#16a34a;--bad:#ef4444;
 }
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;background:var(--bg);color:var(--text)}
 .wrap{max-width:1000px;margin:0 auto;padding:20px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
 button{background:#f3f4f6;border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:4px;cursor:pointer;font-weight:600}
 button.primary{background:linear-gradient(135deg,#60a5fa,#22c55e);color:#fff;border:none}
-button:disabled{opacity:.5;cursor:not-allowed}
 .small{font-size:13px;color:var(--muted)}
 .hidden{display:none}
 input[type=text]{padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:15px}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left}
-tr.ok td{background:#ecfdf5}tr.bad td{background:#fef2f2}tr.skip td{background:#f3f4f6}
-canvas{max-width:100%;height:auto}
 .langbtn{border:none;background:#e0e7ff;color:#1e3a8a;border-radius:8px;padding:4px 10px;font-weight:600;margin-left:4px}
+footer{margin-top:20px;font-size:12px;color:var(--muted);text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>Hearing Lab v6.2 • Light Bilingual</h1>
-
-<!-- language selector -->
-<div>
- 🌐 Language:
+<h1>Hearing Lab v6.3 • Light Bilingual • Build #2300</h1>
+<div>🌐 Language:
  <button id="setEN" class="langbtn">English</button>
  <button id="setFI" class="langbtn">Suomi</button>
 </div>
@@ -46,64 +39,23 @@ canvas{max-width:100%;height:auto}
 <section id="calibration" class="card hidden">
  <h3 id="t_calib"></h3>
  <p id="t_calibInfo" class="small"></p>
- <div>
-  <button id="toneBtn" class="primary">▶ Play / Stop 1 kHz</button>
-  <button data-cal="barely">Barely audible</button>
-  <button data-cal="ok">Comfortable</button>
-  <button data-cal="loud">Loud OK</button>
-  <button id="toHyper">Next → Hyperacusis</button>
- </div>
+ <button id="toneBtn" class="primary">▶ Play / Stop 1 kHz</button>
+ <button id="toHyper">Next → Hyperacusis</button>
 </section>
 
 <section id="hyper" class="card hidden">
  <h3 id="t_hyper"></h3>
  <p id="t_hyperInfo" class="small"></p>
- <div>
-  <button id="hyperPlay" class="primary">▶ Play next tone</button>
-  <button id="hyperReplay">⟳ Replay</button>
-  <button data-hlx="barely">Barely</button>
-  <button data-hlx="ok">Comfortable</button>
-  <button data-hlx="loud">Loud OK</button>
-  <button data-hlx="unpleasant">Unpleasant</button>
-  <button id="toWordSetup">Next → Word Test</button>
- </div>
+ <button id="hyperPlay" class="primary">▶ Play next tone</button>
+ <button id="hyperReplay">⟳ Replay</button>
+ <button id="toWords" class="primary">Next → Word test</button>
  <div class="small">Progress: <span id="hyperProg">0</span>/5 freq <span id="hyperHz">–</span> kHz</div>
  <canvas id="hyperChart" width="700" height="200"></canvas>
 </section>
 
-<section id="setupWords" class="card hidden">
- <h3 id="t_setup"></h3>
- <p class="small" id="t_setupInfo"></p>
- <div>
-  <label id="t_lang"></label>
-  <select id="wordLang">
-   <option value="EN">English</option>
-   <option value="FI">Suomi</option>
-  </select>
- </div>
- <div>
-  <label id="t_noise"></label>
-  <select id="noiseSel">
-   <option value="none">None</option>
-   <option value="white">White noise</option>
-   <option value="cafe">Café noise</option>
-   <option value="street">Street noise</option>
-  </select>
- </div>
- <div>
-  <label id="t_voice"></label>
-  <select id="voiceSel">
-   <option value="random">Random</option>
-   <option value="male">Male</option>
-   <option value="female">Female</option>
-  </select>
- </div>
- <div><button id="toWords" class="primary"></button></div>
-</section>
-
 <section id="words" class="card hidden">
  <h3 id="t_wordtest"></h3>
- <div class="small"><span id="t_ear"></span> <span id="earLabel">Left</span> • <span id="t_word"></span> <span id="wIdx">0</span>/50 • <span id="t_ok"></span> <span id="wOk">0</span></div>
+ <div class="small"><span id="t_word"></span> <span id="wIdx">0</span>/10</div>
  <div>
   <button id="playWord" class="primary">▶ Play</button>
   <button id="repeatWord">⟳ Repeat</button>
@@ -119,113 +71,69 @@ canvas{max-width:100%;height:auto}
  <h3 id="t_results"></h3>
  <div id="summary"></div>
  <canvas id="earChart" width="700" height="220"></canvas>
- <table id="detailTable"><thead><tr><th>#</th><th>Ear</th><th>Word</th><th>Answer</th><th>Outcome</th></tr></thead><tbody></tbody></table>
- <div><button id="restart" class="primary"></button></div>
+ <button id="restart" class="primary"></button>
 </section>
+
+<footer>Hearing Lab v6.3 • Build #2300 • November 2025</footer>
 </div>
 
 <script>
-/* ---------- text dictionary ---------- */
-const T = {
- EN:{
-  intro:"Test Instructions",
-  steps:[
-   "Use good headphones in a quiet room.",
-   "Set volume to about 50 %.",
-   "During calibration choose a comfortable level.",
-   "You can always choose 'I can’t tell'.",
-   "Steps: Calibration → Sensitivity → Word test → Results."
-  ],
-  start:"▶ Start test",calib:"Calibration",
-  calibInfo:"Play 1 kHz tone and choose how it feels.",
-  hyper:"Hyperacusis / Loudness sensitivity",
-  hyperInfo:"Play five tones (0.5 – 8 kHz) and rate each.",
-  setup:"Word test setup",setupInfo:"Choose language, background noise and voice type.",
-  lang:"Language:",noise:"Background noise:",voice:"Voice type:",
-  cont:"▶ Continue",wordtest:"Word test",ear:"Ear:",word:"Word:",ok:"Correct:",
-  results:"Results",restart:"Restart"
- },
- FI:{
-  intro:"Kuulotestin ohjeet",
-  steps:[
-   "Käytä hyviä kuulokkeita hiljaisessa tilassa.",
-   "Säädä äänenvoimakkuus noin puoleen.",
-   "Kalibroinnissa valitse miellyttävä tasapiste.",
-   "Voit aina valita 'Ohi / En erota'.",
-   "Vaiheet: Kalibrointi → Ääniherkkyys → Sanatesti → Tulokset."
-  ],
-  start:"▶ Aloita testi",calib:"Kalibrointi",
-  calibInfo:"Soita 1 kHz ääni ja valitse miltä tuntuu.",
-  hyper:"Ääniherkkyystesti",hyperInfo:"Soitetaan viisi ääntä (0.5 – 8 kHz).",
-  setup:"Sanatestin asetukset",setupInfo:"Valitse kieli, taustamelu ja äänen tyyppi.",
-  lang:"Kieli:",noise:"Taustamelu:",voice:"Äänen tyyppi:",
-  cont:"▶ Jatka",wordtest:"Sanatesti",ear:"Korva:",word:"Sana:",ok:"Oikein:",
-  results:"Tulokset",restart:"Aloita alusta"
- }
-};
-let LANG = localStorage.getItem('hl_lang')||'FI';
-function setLang(l){
- LANG=l;localStorage.setItem('hl_lang',l);
+// ---------- text dictionary ----------
+const T={EN:{intro:"Test Instructions",steps:["Use good headphones.","Set volume ≈ 50 %.","During calibration choose a comfortable level.","You can always choose 'I can’t tell'.","Steps: Calibration → Sensitivity → Word test → Results."],
+ start:"▶ Start test",calib:"Calibration",calibInfo:"Play 1 kHz tone and choose how it feels.",hyper:"Hyperacusis / Loudness sensitivity",
+ hyperInfo:"Play five tones (0.5 – 8 kHz) and rate each.",wordtest:"Word test",word:"Word:",results:"Results",restart:"Restart"},
+ FI:{intro:"Kuulotestin ohjeet",steps:["Käytä hyviä kuulokkeita hiljaisessa tilassa.","Säädä ääni noin puoleenväliin.","Kalibroinnissa valitse miellyttävä taso.","Voit aina valita 'Ohi / En erota'.","Vaiheet: Kalibrointi → Ääniherkkyys → Sanatesti → Tulokset."],
+ start:"▶ Aloita testi",calib:"Kalibrointi",calibInfo:"Soita 1 kHz ääni ja valitse miltä tuntuu.",hyper:"Ääniherkkyystesti",
+ hyperInfo:"Soitetaan viisi ääntä (0.5–8 kHz).",wordtest:"Sanatesti",word:"Sana:",results:"Tulokset",restart:"Aloita alusta"}};
+let LANG=localStorage.getItem('hl_lang')||'FI';
+function setLang(l){LANG=l;localStorage.setItem('hl_lang',l);
  const t=T[LANG];
  document.getElementById('t_intro').textContent=t.intro;
- const list=document.getElementById('t_steps');
- list.innerHTML=t.steps.map(s=>`<li>${s}</li>`).join('');
+ document.getElementById('t_steps').innerHTML=t.steps.map(s=>`<li>${s}</li>`).join('');
  document.getElementById('startBtn').textContent=t.start;
- ['calib','calibInfo','hyper','hyperInfo','setup','setupInfo','lang','noise','voice','wordtest','ear','word','ok','results','restart']
- .forEach(k=>{const el=document.getElementById('t_'+k);if(el)el.textContent=t[k];});
- document.getElementById('toWords')?.textContent=t.cont;
- document.getElementById('toWordSetup')?.textContent=t.cont;
+ document.getElementById('t_calib').textContent=t.calib;
+ document.getElementById('t_calibInfo').textContent=t.calibInfo;
+ document.getElementById('t_hyper').textContent=t.hyper;
+ document.getElementById('t_hyperInfo').textContent=t.hyperInfo;
+ document.getElementById('t_wordtest').textContent=t.wordtest;
+ document.getElementById('t_word').textContent=t.word;
+ document.getElementById('t_results').textContent=t.results;
+ document.getElementById('restart').textContent=t.restart;
 }
 document.getElementById('setEN').onclick=()=>setLang('EN');
 document.getElementById('setFI').onclick=()=>setLang('FI');
 setLang(LANG);
 
-/* ---------- audio setup ---------- */
+// ---------- calibration ----------
 let actx,osc,gain;
-function ensureAudio(){if(actx)return;actx=new(window.AudioContext||window.webkitAudioContext)();
-osc=actx.createOscillator();gain=actx.createGain();osc.connect(gain).connect(actx.destination);osc.start();gain.gain.value=0;}
+function ensureAudio(){if(actx)return;actx=new (window.AudioContext||window.webkitAudioContext)();osc=actx.createOscillator();gain=actx.createGain();osc.connect(gain).connect(actx.destination);osc.start();gain.gain.value=0;}
 function playTone(f){ensureAudio();osc.frequency.value=f;gain.gain.setValueAtTime(0.1,actx.currentTime);}
 function stopTone(){if(!gain)return;gain.gain.setValueAtTime(0,actx.currentTime);}
-
-/* ---------- calibration ---------- */
 document.getElementById('startBtn').onclick=()=>{document.getElementById('instructions').classList.add('hidden');document.getElementById('calibration').classList.remove('hidden');};
 document.getElementById('toneBtn').onclick=()=>{ensureAudio();if(gain.gain.value>0)stopTone();else playTone(1000);};
 document.getElementById('toHyper').onclick=()=>{stopTone();document.getElementById('calibration').classList.add('hidden');document.getElementById('hyper').classList.remove('hidden');};
 
-/* ---------- hyperacusis ---------- */
+// ---------- hyperacusis ----------
 const freqs=[500,1000,2000,4000,8000];let hIndex=0;const ratings=[];
 document.getElementById('hyperPlay').onclick=()=>{if(hIndex>=freqs.length)return;playTone(freqs[hIndex]);setTimeout(stopTone,800);document.getElementById('hyperHz').textContent=(freqs[hIndex]/1000).toFixed(1);};
 document.getElementById('hyperReplay').onclick=()=>{if(hIndex<freqs.length){playTone(freqs[hIndex]);setTimeout(stopTone,800);}};
-document.querySelectorAll('[data-hlx]').forEach(b=>b.onclick=()=>{if(hIndex>=freqs.length)return;ratings.push({hz:freqs[hIndex],v:b.dataset.hlx});hIndex++;document.getElementById('hyperProg').textContent=hIndex;drawHyper();if(hIndex>=freqs.length)stopTone();});
-document.getElementById('toWordSetup').onclick=()=>{document.getElementById('hyper').classList.add('hidden');document.getElementById('setupWords').classList.remove('hidden');};
-function drawHyper(){const ctx=document.getElementById('hyperChart').getContext('2d');ctx.clearRect(0,0,700,200);ctx.fillStyle='#94a3b8';ratings.forEach((r,i)=>{const h=40+['barely','ok','loud','unpleasant'].indexOf(r.v)*30;ctx.fillRect(60+i*120,180-h,50,h);ctx.fillText(r.hz/1000+'k',65+i*120,190);});}
+document.getElementById('toWords').onclick=()=>{stopTone();document.getElementById('hyper').classList.add('hidden');document.getElementById('words').classList.remove('hidden');startWords();};
+function drawHyper(){const ctx=document.getElementById('hyperChart').getContext('2d');ctx.clearRect(0,0,700,200);ctx.fillStyle='#94a3b8';ratings.forEach((r,i)=>{const h=40+i*25;ctx.fillRect(60+i*120,180-h,50,h);ctx.fillText(r.hz/1000+'k',65+i*120,190);});}
 
-/* ---------- word setup ---------- */
-document.getElementById('toWords').onclick=()=>{document.getElementById('setupWords').classList.add('hidden');document.getElementById('words').classList.remove('hidden');startWords();};
-
-/* ---------- background noise loader ---------- */
-let noiseAudio=null;
-async function playNoise(type){
- if(type==='none'){if(noiseAudio){noiseAudio.pause();noiseAudio=null;}return;}
- if(noiseAudio){noiseAudio.pause();}
- noiseAudio=new Audio('sounds/'+type+'.mp3');noiseAudio.loop=true;noiseAudio.volume=0.3;await noiseAudio.play();
-}
-
-/* ---------- word list ---------- */
-/* ---------- word list ---------- */
+// ---------- words ----------
 const wordsEN=["cat","dog","car","tree","book","house","road","chair","door","sun"];
 const wordsFI=["kissa","koira","auto","puu","kirja","talo","tie","tuoli","ovi","aurinko"];
 let list=[],idx=0,ok=0;
 function speak(w,lang){const u=new SpeechSynthesisUtterance(w);u.lang=lang==='FI'?'fi-FI':'en-US';window.speechSynthesis.speak(u);}
-function startWords(){const lang=document.getElementById('wordLang').value;const arr=(lang==='FI'?wordsFI:wordsEN).slice(0,50);list=arr;idx=0;ok=0;playNoise(document.getElementById('noiseSel').value);nextWord(lang);}
-function nextWord(lang){if(idx>=list.length){finish();return;}const w=list[idx];document.getElementById('wIdx').textContent=idx+1;document.getElementById('wOk').textContent=ok;speak(w,document.getElementById('wordLang').value);}
-document.getElementById('playWord').onclick=()=>speak(list[idx],document.getElementById('wordLang').value);
-document.getElementById('repeatWord').onclick=()=>speak(list[idx],document.getElementById('wordLang').value);
+function startWords(){const lang=LANG;list=(lang==='FI'?wordsFI:wordsEN);idx=0;ok=0;nextWord();}
+function nextWord(){if(idx>=list.length){finish();return;}document.getElementById('wIdx').textContent=idx+1;speak(list[idx],LANG);}
+document.getElementById('playWord').onclick=()=>speak(list[idx],LANG);
+document.getElementById('repeatWord').onclick=()=>speak(list[idx],LANG);
 function submit(skip){const ans=skip?'skip':document.getElementById('answer').value.trim();if(ans.toLowerCase()===list[idx].toLowerCase())ok++;idx++;document.getElementById('answer').value='';nextWord();}
 document.getElementById('submitAns').onclick=()=>submit(false);
 document.getElementById('skipAns').onclick=()=>submit(true);
-function finish(){if(noiseAudio){noiseAudio.pause();}document.getElementById('words').classList.add('hidden');document.getElementById('results').classList.remove('hidden');document.getElementById('summary').textContent='Score '+ok+'/50';drawEarChart();}
-function drawEarChart(){const ctx=document.getElementById('earChart').getContext('2d');ctx.clearRect(0,0,700,220);ctx.fillStyle='#60a5fa';const h=(ok/50)*180;ctx.fillRect(100,200-h,80,h);ctx.fillStyle='#111';ctx.fillText(ok+'/50',110,190-h);}
+function finish(){document.getElementById('words').classList.add('hidden');document.getElementById('results').classList.remove('hidden');document.getElementById('summary').textContent='Score '+ok+'/10';drawEarChart();}
+function drawEarChart(){const ctx=document.getElementById('earChart').getContext('2d');ctx.clearRect(0,0,700,220);ctx.fillStyle='#60a5fa';const h=(ok/10)*180;ctx.fillRect(100,200-h,80,h);ctx.fillStyle='#111';ctx.fillText(ok+'/10',110,190-h);}
 document.getElementById('restart').onclick=()=>location.reload();
 </script>
 </body>
