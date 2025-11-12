@@ -1,14 +1,14 @@
-<!-- Hearing Lab v8.1 – Suomi – Build #2311 – November 2025 -->
+<!-- Hearing Lab v8.2 – Suomi – Build #2312 – November 2025 -->
 <!doctype html>
 <html lang="fi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hearing Lab v8.1 – Kuulotesti (Suomi)</title>
+<title>Hearing Lab v8.2 – Kuulotesti (Suomi)</title>
 <style>
 body{font-family:sans-serif;background:#f8fafc;color:#111;margin:0;padding:20px;text-align:center}
 button{background:#2563eb;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:16px;margin:6px;cursor:pointer}
-input{padding:8px;border:1px solid #ccc;border-radius:6px}
+input,select{padding:8px;border:1px solid #ccc;border-radius:6px}
 .card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);margin:20px auto;padding:20px;max-width:420px}
 .hidden{display:none}
 .version{color:#555;font-size:14px;margin-bottom:8px}
@@ -17,21 +17,21 @@ footer{margin-top:30px;font-size:12px;color:#555}
 </head>
 <body>
 <h1>Hearing Lab – Kuulotesti</h1>
-<div class="version">Versio 8.1 (Suomi Build #2311)</div>
+<div class="version">Versio 8.2 (Suomi • Build #2312)</div>
 
 <div class="card" id="kalib">
  <h2>Kalibrointi</h2>
  <p>Soita 1 kHz ääni ja säädä äänenvoimakkuus mukavaksi.</p>
  <button onclick="playTone(1000)">▶ Soita 1 kHz</button>
  <button onclick="stopTone()">⏹ Pysäytä</button><br><br>
- <button onclick="next('hyper')">Seuraava → Ääniherkkyystesti</button>
+ <button onclick="next('hyper')">Seuraava → Ääniyliherkkyystesti</button>
 </div>
 
 <div class="card hidden" id="hyper">
- <h2>Ääniherkkyystesti</h2>
- <p>Kuuntele viisi ääntä eri taajuuksilla (0.5–8 kHz) ja arvioi miltä ne tuntuvat.</p>
- <p id="freqLabel"></p>
- <button onclick="playNextFreq()">▶ Soita seuraava</button><br>
+ <h2>Ääniyliherkkyystesti</h2>
+ <p>Kuuntele sanaa eri voimakkuuksilla (20–100 %) ja arvioi miltä se tuntuu.</p>
+ <p id="volLabel"></p>
+ <button onclick="playNextVol()">▶ Soita seuraava</button><br>
  <button onclick="rate('miellyttävä')">Miellyttävä</button>
  <button onclick="rate('kuuluu')">Kuuluu</button>
  <button onclick="rate('kovahko')">Kovahko</button>
@@ -41,6 +41,13 @@ footer{margin-top:30px;font-size:12px;color:#555}
 
 <div class="card hidden" id="words">
  <h2>Sanatesti</h2>
+ <p>Voit lisätä taustaäänen:</p>
+ <select id="noiseSelect" onchange="changeNoise(this.value)">
+   <option value="none">Ei taustaa</option>
+   <option value="cafe">☕ Kahvila</option>
+   <option value="traffic">🚗 Liikenne</option>
+   <option value="white">🌧 Valkoinen kohina</option>
+ </select>
  <p id="wordNum"></p>
  <button onclick="playWord()">▶ Soita sana</button><br><br>
  <input id="ans" placeholder="Kirjoita sana"><br><br>
@@ -55,7 +62,7 @@ footer{margin-top:30px;font-size:12px;color:#555}
  <button onclick="location.reload()">Aloita alusta</button>
 </div>
 
-<footer>Hearing Lab v8.1 • Suomi • Build #2311 • November 2025</footer>
+<footer>Hearing Lab v8.2 • Suomi • Build #2312 • November 2025</footer>
 
 <script>
 // --- Äänen toisto ---
@@ -67,21 +74,33 @@ function playTone(f){
  osc.frequency.value=f;gain.gain.value=0.1;
 }
 function stopTone(){if(gain)gain.gain.value=0;}
-
-// --- Vaiheet ---
 function next(id){document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
  document.getElementById(id).classList.remove('hidden');}
 
-// --- Hyperacusis ---
-const freqs=[500,1000,2000,4000,8000];let fIndex=0;let arvio=[];
-function playNextFreq(){
- if(fIndex>=freqs.length)return;
- playTone(freqs[fIndex]);setTimeout(stopTone,800);
- document.getElementById("freqLabel").textContent=freqs[fIndex]/1000+" kHz";
+// --- Ääniyliherkkyys voimakkuuksilla ---
+const vols=[0.2,0.4,0.6,0.8,1.0];let vIndex=0;let arvio=[];
+function playNextVol(){
+ if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();}
+ const utter=new SpeechSynthesisUtterance("koira");
+ utter.lang="fi-FI"; utter.volume=vols[vIndex];
+ speechSynthesis.speak(utter);
+ document.getElementById("volLabel").textContent=Math.round(vols[vIndex]*100)+" %";
 }
 function rate(v){
- if(fIndex<freqs.length){arvio.push(freqs[fIndex]+" Hz: "+v);fIndex++;
-  if(fIndex>=freqs.length)alert("Testi valmis – siirry sanatestiin.");}
+ if(vIndex<vols.length){arvio.push(Math.round(vols[vIndex]*100)+"%: "+v);vIndex++;
+  if(vIndex>=vols.length)alert("Testi valmis – siirry sanatestiin.");}
+}
+
+// --- Taustaäänet ---
+let noiseAudio=null;
+function changeNoise(type){
+ if(noiseAudio){noiseAudio.pause();noiseAudio=null;}
+ if(type==="none")return;
+ let src="";
+ if(type==="cafe")src="https://cdn.jsdelivr.net/gh/itsmyid/noises/cafe.mp3";
+ if(type==="traffic")src="https://cdn.jsdelivr.net/gh/itsmyid/noises/traffic.mp3";
+ if(type==="white")src="https://cdn.jsdelivr.net/gh/itsmyid/noises/white.mp3";
+ noiseAudio=new Audio(src);noiseAudio.loop=true;noiseAudio.volume=0.2;noiseAudio.play();
 }
 
 // --- Sanatesti ---
@@ -91,22 +110,7 @@ const sanat=["kissa","koira","talo","kirja","tuoli","auto","tie","ovi","sänky",
 "koulu","kuva","puu","lääkäri","juna","bussi","polku","portti","ikkuna","musiikki",
 "paperi","kynä","perhe","ystävä","valo","ääni","katto","laulu","sormus","nappi"];
 let i=0,ok=0;
-function speak(txt){const u=new SpeechSynthesisUtterance(txt);u.lang="fi-FI";speechSynthesis.speak(u);}
-function playWord(){speak(sanat[i]);document.getElementById("wordNum").textContent="Sana "+(i+1)+" / "+sanat.length;}
+function playWord(){const u=new SpeechSynthesisUtterance(sanat[i]);u.lang="fi-FI";speechSynthesis.speak(u);
+ document.getElementById("wordNum").textContent="Sana "+(i+1)+" / "+sanat.length;}
 function submitAns(){
- const a=document.getElementById("ans").value.trim().toLowerCase();
- if(a===sanat[i])ok++;
- document.getElementById("ans").value="";
- i++;if(i>=sanat.length)showRes();else playWord();
-}
-function skip(){i++;if(i>=sanat.length)showRes();else playWord();}
-
-// --- Tulokset ---
-function showRes(){
- next('result');
- document.getElementById("score").textContent="Oikein: "+ok+" / "+sanat.length;
- document.getElementById("hyperRes").textContent="Ääniherkkyys: "+arvio.join(", ");
-}
-</script>
-</bod y>
-</html>
+ const a =document
