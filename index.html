@@ -212,8 +212,9 @@ async function playNoise(type){
 }
 
 /* ---------- word list ---------- */
-const wordsEN=[\"cat\",\"dog\",\"car\",\"tree\",\"book\",\"house\",\"road\",\"chair\",\"door\",\"sun\",...Array(40).fill('test')];
-const wordsFI=[\"kissa\",\"koira\",\"auto\",\"puu\",\"kirja\",\"talo\",\"tie\",\"tuoli\",\"ovi\",\"aurinko\",...Array(40).fill('testi')];
+/* ---------- word list ---------- */
+const wordsEN=["cat","dog","car","tree","book","house","road","chair","door","sun"];
+const wordsFI=["kissa","koira","auto","puu","kirja","talo","tie","tuoli","ovi","aurinko"];
 let list=[],idx=0,ok=0;
 function speak(w,lang){const u=new SpeechSynthesisUtterance(w);u.lang=lang==='FI'?'fi-FI':'en-US';window.speechSynthesis.speak(u);}
 function startWords(){const lang=document.getElementById('wordLang').value;const arr=(lang==='FI'?wordsFI:wordsEN).slice(0,50);list=arr;idx=0;ok=0;playNoise(document.getElementById('noiseSel').value);nextWord(lang);}
